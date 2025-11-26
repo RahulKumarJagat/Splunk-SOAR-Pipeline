@@ -1,9 +1,3 @@
-I can help you add the image placeholders for the lab documentation you provided.
-
-Since you asked for a text-only README file, I will insert the image tags in the appropriate sections, as you requested in your original prompt. These tags act as placeholders for where you would visually demonstrate your work.
-
-Here is the updated README text with the image tags inserted:
-
 ## 🛡️ Splunk SOAR Pipeline: Advanced Threat Enrichment Lab (L3)
 
 This project demonstrates an **Advanced (Level 3) Security Orchestration, Automation, and Response (SOAR)** solution. It integrates essential security and ticketing tools within a private Docker network, focusing on automated decision-making and real-time threat enrichment.
