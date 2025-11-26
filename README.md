@@ -1,3 +1,9 @@
+I can help you add the image placeholders for the lab documentation you provided.
+
+Since you asked for a text-only README file, I will insert the image tags in the appropriate sections, as you requested in your original prompt. These tags act as placeholders for where you would visually demonstrate your work.
+
+Here is the updated README text with the image tags inserted:
+
 ## 🛡️ Splunk SOAR Pipeline: Advanced Threat Enrichment Lab (L3)
 
 This project demonstrates an **Advanced (Level 3) Security Orchestration, Automation, and Response (SOAR)** solution. It integrates essential security and ticketing tools within a private Docker network, focusing on automated decision-making and real-time threat enrichment.
@@ -66,6 +72,8 @@ This workflow runs in **real-time**, pulling in an alert from Splunk and using a
 | **IF Node** | Decision Logic: Checks if the Malicious Flag count is $> 5$. | Noise Reduction / SOAR |
 | **Jira** | Creates a Critical Bug with the VT score and report link. | Automated Triage |
 
+-----
+
 ### 2\. Scheduled Reporting Pipeline
 
 This is an automated **ETL (Extract, Transform, Load)** process for compliance and reporting data extraction.
@@ -79,24 +87,29 @@ This is an automated **ETL (Extract, Transform, Load)** process for compliance a
 
 -----
 
+-----
+
 ## 📸 Project Proof & Evidence
 
-Please replace the following placeholders with actual screenshots from your executed lab.
 
-### A. Workflow Diagrams ()
+### A. Workflow Diagrams (n8n Dashboard)
 
-  * **incident response.png** Shows the full chain including the IF node.
-  * **daily report.png** Shows the sequential ETL process.
+  * **Enrichment Flow:** Shows the full chain including the IF node.
+    ![incident response work-flow](images/irw.png)
+  * **Reporting Flow:** Shows the sequential ETL process.
+    ![daily report  work-flow](images/drw.png)
 
 ### B. Splunk Alert Configuration
 
-  * **splunk.png** Proof that the Splunk alert is correctly configured to use `makeresults` with the `src_ip` field and points to the n8n Webhook URL.
+  * ## **Splunk Source:** Proof that the Splunk alert is correctly configured to use `makeresults` with the `src_ip` field and points to the n8n Webhook URL.
+    ![splunk](images/splunk.png)
 
 ### C. Final Results
 
-  * **jira.png** Proof that the automation successfully created a ticket and enriched it with external data.
-
-  * **report.csv** The output of the daily reporting pipeline.
+  * ## **Jira Result:** Proof that the automation successfully created a ticket and enriched it with external data.
+    ![jira](images/jira.png)
+  * ## **CSV Report:** The output of the daily reporting pipeline.
+    ![report csv](images/report.png)
 
 -----
 
