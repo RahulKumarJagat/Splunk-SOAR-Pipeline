@@ -1,0 +1,40 @@
+version: '3.7'
+networks:
+  soc-net:
+    driver: bridge
+
+services:
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk
+    hostname: splunk
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=YOUR_ADMIN_PASSWORD_HERE # << CHANGE THIS
+      - SPLUNK_USER=admin
+    ports:
+      - "8000:8000" 
+      - "8089:8089" # API Port for n8n
+    networks:
+      - soc-net
+    volumes:
+      - splunk_data:/opt/splunk/var # Persist Splunk data
+
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    hostname: n8n
+    restart: unless-stopped
+    environment:
+      - N8N_HOST=n8n
+      - N8N_PORT=5678
+    ports:
+      - "5678:5678"
+    networks:
+      - soc-net
+    volumes:
+      - n8n_data:/home/node/.n8n # Persist n8n settings/credentials
+
+volumes:
+  splunk_data:
+  n8n_data:

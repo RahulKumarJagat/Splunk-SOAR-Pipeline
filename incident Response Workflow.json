@@ -1,0 +1,178 @@
+{
+  "name": "incident Response Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "splunk-alert",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1264,
+        -304
+      ],
+      "id": "6d4dbcae-02d6-4378-afc7-192780970b56",
+      "name": "Webhook",
+      "webhookId": "4ee14e47-ae71-4248-84da-671fb9f8d1d3"
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10000",
+          "mode": "list",
+          "cachedResultName": "SECOP"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "10003",
+          "mode": "list",
+          "cachedResultName": "Bug"
+        },
+        "summary": "=🚨 CRITICAL: Malicious IP Alert | Flags: {{ $json.data.attributes.last_analysis_stats.malicious }} | IP: {{ $json.body.result.src_ip }}",
+        "additionalFields": {
+          "description": "=Splunk Alert: {{ $json.body.result.message }}\n\nThreat Intelligence Summary:\n- Malicious Flags: {{ $json.data.attributes.last_analysis_stats.malicious }}\n- Suspicious Flags: {{ $json.data.attributes.last_analysis_stats.suspicious }}\n\n[ Full VirusTotal Report Link ]\n{{ $json.data.links.self }}"
+        }
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -144
+      ],
+      "id": "cd672809-486d-479d-8222-70058ae312db",
+      "name": "Create an issue",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "7BErNmVlheV2evot",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "preBuiltAgentsCalloutHttpRequest": "",
+        "httpVariantWarning": "",
+        "curlImport": "",
+        "method": "GET",
+        "": "",
+        "url": "=https://www.virustotal.com/api/v3/ip_addresses/{{ $json.body.result.src_ip }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "virusTotalApi",
+        "provideSslCertificates": false,
+        "sendQuery": false,
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Apikey",
+              "value": "06478f502fecbb1cd2f6ab983211b98ff443e4dc744c989fb953ee6db4ae9b3f"
+            }
+          ]
+        },
+        "sendBody": false,
+        "options": {},
+        "infoMessage": ""
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1040,
+        -176
+      ],
+      "id": "444da3ce-3255-45d0-81ae-623ddefb61ea",
+      "name": "VirusTotal HTTP Request",
+      "extendsCredential": "virusTotalApi",
+      "credentials": {
+        "virusTotalApi": {
+          "id": "yq3MdEDFtwPsdKx9",
+          "name": "VirusTotal account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa3b5445-60a4-46e0-af95-03f7fccc9bd9",
+              "leftValue": "={{ $json.data.attributes.last_analysis_stats.malicious }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -848,
+        -288
+      ],
+      "id": "b0e0eac9-29b5-43d7-ab12-838560418335",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VirusTotal HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create an issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "99a05156-d10c-47f5-a01c-f019e13149b4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9fe5b196dedab39cbacc5f547e965e04e25c6cba691a2471dc5b8642758955c5"
+  },
+  "id": "05rhi05oy9et7682",
+  "tags": []
+}

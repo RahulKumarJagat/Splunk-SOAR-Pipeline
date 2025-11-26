@@ -1,0 +1,181 @@
+{
+  "name": "Daily Reporting Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -672,
+        -192
+      ],
+      "id": "135f7c04-bb08-4435-88c2-7882d9c90b83",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "search": "search index=_internal | stats count by sourcetype",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.splunk",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        48
+      ],
+      "id": "9587bb6f-474d-42d9-bd48-097a9221fe9f",
+      "name": "Create a search job",
+      "credentials": {
+        "splunkApi": {
+          "id": "l7wzwiLMii4aw2LF",
+          "name": "Splunk account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getResult",
+        "searchJobId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splunk",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        48
+      ],
+      "id": "de799f12-4bf2-4551-a53d-82432e4f42e5",
+      "name": "Get the result of a search job",
+      "credentials": {
+        "splunkApi": {
+          "id": "l7wzwiLMii4aw2LF",
+          "name": "Splunk account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        -176
+      ],
+      "id": "e43d77c6-8b59-4649-aeee-ec30b667db2f",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -176
+      ],
+      "id": "e908e86e-6d61-4fe7-bd22-371658a2d009",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/tmp/splunk_report.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -176
+      ],
+      "id": "4ffe8dad-9e8f-4503-a9e7-d6a6776a9f02",
+      "name": "Read/Write Files from Disk"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Create a search job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a search job": {
+      "main": [
+        [
+          {
+            "node": "Get the result of a search job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the result of a search job": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "18236c9e-7115-492d-b821-a7dca9c3ba34",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9fe5b196dedab39cbacc5f547e965e04e25c6cba691a2471dc5b8642758955c5"
+  },
+  "id": "UDLtzgglwhFhQA1y",
+  "tags": []
+}
